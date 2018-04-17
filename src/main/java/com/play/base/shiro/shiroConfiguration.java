@@ -41,13 +41,13 @@ public class shiroConfiguration {
         Map<String,String> filterChainDefinitionMap = new LinkedHashMap<>();
         //退出过滤器，具体代码Shiro已经实现
         filterChainDefinitionMap.put("/logout","logout");
+        filterChainDefinitionMap.put("/index","user");
+        filterChainDefinitionMap.put("/","user");
         filterChainDefinitionMap.put("/enroll","anon");
         //过滤链定义，从上往下顺序执行，一般将/**放在最下边
         filterChainDefinitionMap.put("/user/adduser","anon");
         filterChainDefinitionMap.put("/modual/user/adduser","anon");
         filterChainDefinitionMap.put("/static/**", "anon");
-        filterChainDefinitionMap.put("/index","user");
-        filterChainDefinitionMap.put("/","user");
         //filterChainDefinitionMap.put("/js/**","anon");//可匿名访问到js文件
 
         //authc：所有url必须认证才能访问；anon，所有url都可以匿名访问

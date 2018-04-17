@@ -19,13 +19,13 @@ public class HomeController {
         return "/index";
     }
 
-    @RequestMapping(value = "/login")
-    public String login(HttpServletRequest request, Map<String,Object> map) throws Exception{
-        System.out.println(">>>>>>>>>>>HomeController.login()<<<<<<<<<");
-        //登陆失败从request中获取异常信息
-        String exception = (String) request.getAttribute("shiroLoginFailure");
+        @RequestMapping(value = "/login")
+        public String login(HttpServletRequest request, Map<String,Object> map) throws Exception{
+            System.out.println(">>>>>>>>>>>HomeController.login()<<<<<<<<<");
+            //登陆失败从request中获取异常信息
+            String exception = (String) request.getAttribute("shiroLoginFailure");
 
-        System.out.println("shiroException="+exception);
+            System.out.println("shiroException="+exception);
         String msg ="";
         if(exception != null){
             if(UnknownAccessTypeException.class.getName().equals(exception)){
@@ -42,7 +42,9 @@ public class HomeController {
                 msg = "else------>>"+exception;
             }
             map.put("msg",msg);
+            return "/login";
         }
-        return "/login";
+        return "/index";
     }
+
 }
