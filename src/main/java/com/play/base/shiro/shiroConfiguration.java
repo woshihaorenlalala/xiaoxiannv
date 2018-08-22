@@ -1,23 +1,23 @@
 package com.play.base.shiro;
 
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
+import com.play.base.listener.BDSessionListener;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
-import org.apache.shiro.mgt.RememberMeManager;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.session.SessionListener;
+import org.apache.shiro.session.mgt.eis.MemorySessionDAO;
+import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
-import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.subject.SubjectContext;
 import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.SimpleCookie;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -32,11 +32,12 @@ public class shiroConfiguration {
      * @param securityManager
      * @return
      */
-    @Bean
+    @Bean(name="shiroFilter")
     public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager){
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>shiroConfiguration.shiroFilter()");
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>shiroConfiguration.shiroFilter()<<<<<<<<<<<<<<<<<<");
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
+
         //拦截器
         Map<String,String> filterChainDefinitionMap = new LinkedHashMap<>();
         //退出过滤器，具体代码Shiro已经实现
@@ -60,7 +61,7 @@ public class shiroConfiguration {
         return shiroFilterFactoryBean;
     }
 
-    @Bean
+    @Bean(name="securityManager")
     public SecurityManager securityManager(){
         DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
         //设置Realm
@@ -72,26 +73,41 @@ public class shiroConfiguration {
         return defaultWebSecurityManager;
     }
 
+    @Bean
+    public SessionDAO sessionDAO(){
+        return new MemorySessionDAO();
+    }
+
+    @Bean(name = "sessionManager")
+    public DefaultWebSessionManager sessionManager() {
+        //该版本上DefaultWebSessionManager 再new的时候就已经实现sessionDao了，但有些版本没有
+        DefaultWebSessionManager sessionManager=new DefaultWebSessionManager();
+        sessionManager.setSessionDAO(sessionDAO());
+        Collection<SessionListener> listeners =new ArrayList<SessionListener>();
+        listeners.add(new BDSessionListener());
+        sessionManager.setSessionListeners(listeners);
+        return sessionManager;
+    }
+
     /**
      * 身份认证Realm
      * 账号密码校验等
      * @return
      */
-    @Bean
+    @Bean(name = "myShiroRealm")
     public MyShiroRealm myShiroRealm(){
         MyShiroRealm myShiroRealm = new MyShiroRealm();
         //注入凭证匹配器
         myShiroRealm.setCredentialsMatcher(hashedCredentialsMatcher());
         return myShiroRealm;
     }
-
     /**
      * 凭证匹配器（告诉Shiro用的哪用加密）
      * @return
      */
     @Bean
     public HashedCredentialsMatcher hashedCredentialsMatcher(){
-        HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
+        MyHashedCredentialsMatcher hashedCredentialsMatcher = new MyHashedCredentialsMatcher(ehCacheManager());
         //采用MD5加密
         hashedCredentialsMatcher.setHashAlgorithmName("MD5");
         //加密次数,2相当于MD5(MD5(""))
@@ -114,7 +130,7 @@ public class shiroConfiguration {
         return authorizationAttributeSourceAdvisor;
     }
 
-    @Bean
+    @Bean(name = "ehCacheManager")
     public EhCacheManager ehCacheManager(){
         System.out.println("ehCacheManager()");
         EhCacheManager ehCacheManager = new EhCacheManager();

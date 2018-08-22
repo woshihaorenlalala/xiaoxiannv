@@ -26,24 +26,6 @@ public class MyShiroRealm extends AuthorizingRealm {
     private UserService userService;
 
     /**
-     * 授权
-     */
-    @Override
-    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>MyShiroRealm.doGetAuthorizationInfo()");
-        SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-        User user = (User) principalCollection.getPrimaryPrincipal();
-        //授权
-        for (SysRole role : user.getRoleList()){
-            simpleAuthorizationInfo.addRole(role.getRole());
-            for(SysPermission p : role.getPermissionList()){
-                simpleAuthorizationInfo.addStringPermission(p.getPermission());
-            }
-        }
-        return simpleAuthorizationInfo;
-    }
-
-    /**
      * 认证信息（身份验证）
      *
      */
@@ -70,4 +52,23 @@ public class MyShiroRealm extends AuthorizingRealm {
             }
         }
     }
+
+    /**
+     * 授权
+     */
+    @Override
+    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>MyShiroRealm.doGetAuthorizationInfo()");
+        SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
+        User user = (User) principalCollection.getPrimaryPrincipal();
+        //授权
+        for (SysRole role : user.getRoleList()){
+            simpleAuthorizationInfo.addRole(role.getRole());
+            for(SysPermission p : role.getPermissionList()){
+                simpleAuthorizationInfo.addStringPermission(p.getPermission());
+            }
+        }
+        return simpleAuthorizationInfo;
+    }
+
 }

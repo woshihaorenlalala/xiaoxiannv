@@ -9,6 +9,7 @@ import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +17,7 @@ import javax.servlet.MultipartConfigElement;
 
 @ServletComponentScan
 @SpringBootApplication
-@EnableCaching
+@EnableScheduling
 public class Springtest02Application {
 	public static void main(String[] args) {
 		//args 可以换成一些启动项来配合CommadLineRunner(config文件夹下)

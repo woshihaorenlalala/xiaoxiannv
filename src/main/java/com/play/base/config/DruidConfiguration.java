@@ -64,7 +64,7 @@ public class DruidConfiguration {
         druidDataSource.setPassword(password);
         druidDataSource.setMaxActive(maxActive);
 
-        System.out.println("DruidConfiguration.druidDataSource(),url = [" + url + "], username = [" + username + "], password = [" + password + "], maxActive = [" + maxActive + "]");
+        //System.out.println("DruidConfiguration.druidDataSource(),url = [" + url + "], username = [" + username + "], password = [" + password + "], maxActive = [" + maxActive + "]");
 
         try {
             druidDataSource.setFilters("stat,wall");

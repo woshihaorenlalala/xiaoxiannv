@@ -10,7 +10,7 @@ import java.util.Arrays;
 /**
  * Created by Administrator on 2018/2/23.
  */
-@Component
+/*@Component
 @Order(value = 1)
 public class MyStartupRunner2 implements CommandLineRunner {
     @Override
@@ -18,4 +18,4 @@ public class MyStartupRunner2 implements CommandLineRunner {
         System.out.println("args:"+Arrays.asList(strings));   //这里的strings是application中main方法的args
         System.out.println("》》》》》》》》》》服务启动执行，执行加载数据等操作22222222《《《《《《《《《《");
     }
-}
+}*/

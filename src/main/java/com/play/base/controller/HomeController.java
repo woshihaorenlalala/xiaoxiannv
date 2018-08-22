@@ -1,5 +1,6 @@
 package com.play.base.controller;
 
+import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.hibernate.cache.spi.access.UnknownAccessTypeException;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,7 @@ import java.util.Map;
  */
 @Controller
 public class HomeController {
-    @RequestMapping(value = {"/","/index"})
+    @RequestMapping(value = {"","/index"})
     public String index(){
         return "/index";
     }
@@ -37,14 +38,17 @@ public class HomeController {
             }else if("kaptchaVaildateFailed".equals(exception)){
                 System.out.println("kaptchaVaildateFailed>>>>>>>>>>>验证码不对");
                 msg = "kaptchaVaildateFailed------>验证码不对";
+            }else if(ExcessiveAttemptsException.class.getName().equals(exception)){
+                System.out.println("ExcessiveAttemptsException>>>>>>>>>>>密码尝试多次");
+                msg = "ExcessiveAttemptsException------>密码尝试多次";
             }else{
                 System.out.println("else>>>>>>>>>"+exception);
                 msg = "else------>>"+exception;
             }
             map.put("msg",msg);
-            return "/login";
+
         }
-        return "/index";
+        return "/login";
     }
 
 }
